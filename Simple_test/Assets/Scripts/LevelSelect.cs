@@ -1,22 +1,21 @@
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelSelect : MonoBehaviour
 {
-    public Button[] LevelButtonsArray;
+    [SerializeField] private Button[] _levelButtonsArray;
     private int _index = 1;
-    private int AtLevel;
+    private int _atLevel;
     
     private void Awake()
     {
-        AtLevel = PlayerPrefs.GetInt("AtLevel", 2);
+        _atLevel = PlayerPrefs.GetInt("AtLevel", 2);
     }
     
     private void Start()
     {
-        foreach (Button levelButton in LevelButtonsArray)
+        foreach (Button levelButton in _levelButtonsArray)
         {
             TextMeshProUGUI textMeshPro = levelButton.GetComponentInChildren<TextMeshProUGUI>();
             textMeshPro.text = _index.ToString();
@@ -24,21 +23,23 @@ public class LevelSelect : MonoBehaviour
             int currentIndex = _index;
             if (_index < 29)
             {
-                LevelButtonsArray[_index].onClick.AddListener(() => OpenNextLevel(currentIndex));
+                _levelButtonsArray[_index].onClick.AddListener(() => OpenNextLevel(currentIndex));
                 _index++;   
             }
         }
+        
+        //player prefs atLevel should be load & set opened for i < atLevel, i++
     }
 
     public void OpenNextLevel (int numberCompletedLevel)
     {
-        Image image = LevelButtonsArray[numberCompletedLevel+1].transform.Find("lock [Image]")?.GetComponent<Image>();
+        Image image = _levelButtonsArray[numberCompletedLevel+1].transform.Find("lock [Image]")?.GetComponent<Image>();
         
         if (image != null && image.gameObject.activeSelf)
         {
             image.gameObject.SetActive(false);
-            LevelButtonsArray[numberCompletedLevel+1].interactable = true;
-            AtLevel++;
+            _levelButtonsArray[numberCompletedLevel+1].interactable = true;
+            _atLevel++;
         }
     }
 }
